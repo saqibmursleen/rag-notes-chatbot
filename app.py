@@ -227,7 +227,7 @@ st.divider()
 # --------------------------------------------------------------------
 with st.sidebar:
     st.subheader("🔑 Your OpenAI API key")
-    st.session_state.setdefault("user_api_key", os.getenv("OPENAI_API_KEY", ""))
+    st.session_state.setdefault("user_api_key", "")
     st.text_input(
         "API key",
         type="password",
