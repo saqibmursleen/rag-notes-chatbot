@@ -381,7 +381,7 @@ if user_input:
 st.markdown(
     """
     <div class="app-footer">
-        © 2026 Quill AI · Created with regards by <strong>Saqib</strong>
+        © 2026 Quill AI · Created with regards by <strong>Saqib Mursleen</strong>
     </div>
     """,
     unsafe_allow_html=True,
