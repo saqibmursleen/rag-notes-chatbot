@@ -1,0 +1,34 @@
+Study Techniques — Notes
+
+Active Recall
+Active recall means testing yourself on material instead of just re-reading it.
+Close the book and try to write down everything you remember about a topic,
+then check what you missed. This is far more effective than highlighting or
+passively rereading notes, because retrieving information strengthens memory
+more than simply recognizing it.
+
+Spaced Repetition
+Spaced repetition schedules review sessions at increasing intervals — for
+example, review a topic after one day, then three days, then a week, then two
+weeks. Each successful recall pushes the next review further out. This fights
+the natural forgetting curve, where memory of new material decays fastest in
+the first 24 hours after learning it.
+
+The Feynman Technique
+To check whether you truly understand something, try explaining it in plain
+language as if teaching it to a twelve-year-old. Write the explanation down,
+and any time you get stuck or fall back on jargon, that's exactly the gap in
+your understanding you need to go back and fix.
+
+Interleaving
+Instead of practicing one type of problem repeatedly in a single block (e.g.
+all addition problems, then all subtraction problems), interleaving mixes
+different types of problems together in one study session. It feels harder
+in the moment and slows down initial practice, but produces much better
+long-term retention and the ability to tell problem types apart.
+
+Pomodoro Technique
+Work in focused 25-minute blocks followed by a 5-minute break. After four
+blocks, take a longer 15-30 minute break. The short, bounded intervals make
+starting a task feel less daunting and help maintain concentration by
+treating breaks as a built-in reward rather than a distraction.

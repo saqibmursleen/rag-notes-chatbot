@@ -1,0 +1,36 @@
+Productivity Tips — Notes
+
+Time Blocking
+Time blocking means assigning a specific block of time on your calendar to a
+single task or type of task, rather than working from an open-ended to-do
+list. Instead of "work on project" all day, you might block 9-11am for deep
+work on the project, 11-11:30 for email, and 1-2pm for meetings. This makes
+your day's plan visible and reduces the mental cost of deciding what to do
+next.
+
+The Two-Minute Rule
+If a task takes less than two minutes to complete, do it immediately instead
+of adding it to a to-do list. Writing it down, filing it, and later revisiting
+it usually costs more time and mental energy than just finishing it on the
+spot.
+
+Eat the Frog
+"Eating the frog" means doing your hardest or most important task first thing
+in the day, before checking email or messages. Willpower and focus are
+typically highest earlier in the day, so tackling the most demanding task
+first avoids it looming over the rest of your schedule.
+
+Deep Work vs. Shallow Work
+Deep work is cognitively demanding, focused effort on a task that pushes your
+abilities — like writing, coding, or studying a hard concept. Shallow work is
+low-focus, logistical busywork like replying to routine messages. Protecting
+blocks of time for deep work, free from notifications, produces
+disproportionately more valuable output than the same hours spent
+context-switching between shallow tasks.
+
+The Two-List Strategy
+Write down your top 25 goals, then circle your top 5. The remaining 20 become
+an "avoid at all costs" list — not a someday list. The idea is that
+mid-priority goals are often the most dangerous distraction from your true
+priorities, because they still feel productive while quietly stealing time
+and focus from what matters most.

@@ -1,0 +1,9 @@
+.env
+venv/
+__pycache__/
+*.pyc
+streamlit.log
+
+# Vector DB and copyrighted sample material — not shipped to the public repo
+chroma_db/
+sample_notes/harrypotter_1.pdf
