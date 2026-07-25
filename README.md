@@ -16,33 +16,32 @@ venv\Scripts\activate        # Windows
 pip install -r requirements.txt
 ```
 
-The three `step*.py` scripts below read `OPENAI_API_KEY` from a `.env` file
-in this folder. The Streamlit app (`app.py`) doesn't use `.env` at all —
-it asks each visitor for their own key in the sidebar, so nobody's usage
-gets billed to anyone else's account.
+The three scripts below read `OPENAI_API_KEY` from a `.env` file in this
+folder. The Streamlit app (`app.py`) doesn't use `.env` at all — it asks each
+visitor for their own key in the sidebar, so nobody's usage gets billed to
+anyone else's account.
 
 ## The build, in order
 
-**`step1_manual_embedding.py`** — embeds one chunk of text by hand, no
-framework, just to see what an embedding actually is (a list of ~1536
-numbers).
+**`manual_embedding.py`** — embeds one chunk of text by hand, no framework,
+just to see what an embedding actually is (a list of ~1536 numbers).
 
-**`step2_vectorstore.py`** — loads the sample notes, chunks them, embeds
+**`build_vectorstore.py`** — loads the sample notes, chunks them, embeds
 everything, and stores it in a local Chroma database (`./chroma_db`). Runs a
 test query worded differently than the notes to confirm it's matching on
 meaning, not keywords.
 
-**`step3_rag_chat_cli.py`** — the full retrieve-then-generate loop, in the
-terminal. Same logic the app uses, minus the UI.
+**`cli_chat.py`** — the full retrieve-then-generate loop, in the terminal.
+Same logic the app uses, minus the UI.
 
 **`app.py`** — the actual Streamlit app. Paste an API key, upload `.txt`/`.pdf`
 notes (or use the bundled demo notes), ask questions, see which source chunks
 the answer came from.
 
 ```bash
-python step1_manual_embedding.py
-python step2_vectorstore.py
-python step3_rag_chat_cli.py
+python manual_embedding.py
+python build_vectorstore.py
+python cli_chat.py
 streamlit run app.py
 ```
 
@@ -59,9 +58,9 @@ streamlit run app.py
 
 | File | Purpose |
 |---|---|
-| `step1_manual_embedding.py` | One manual embedding call, no framework |
-| `step2_vectorstore.py` | Build & query a Chroma store from `sample_notes/` |
-| `step3_rag_chat_cli.py` | Full RAG loop, terminal only |
+| `manual_embedding.py` | One manual embedding call, no framework |
+| `build_vectorstore.py` | Build & query a Chroma store from `sample_notes/` |
+| `cli_chat.py` | Full RAG loop, terminal only |
 | `app.py` | The Streamlit app |
 | `sample_notes/` | Demo notes (study techniques, productivity tips) |
 | `chroma_db/` | Local vector DB used by the CLI scripts (not the app) |
