@@ -1,5 +1,5 @@
 """
-Second Brain — Streamlit app
+Quill AI — Streamlit app
 ------------------------------
 Run with:  streamlit run app.py
 
@@ -28,7 +28,8 @@ from langchain_classic.schema import SystemMessage, HumanMessage
 load_dotenv()
 
 SAMPLE_NOTES_DIR = "sample_notes"
-MODEL_NAME = "gpt-4o-mini"
+AVAILABLE_MODELS = ["gpt-4o-mini", "gpt-4o", "gpt-4.1-mini"]
+DEFAULT_MODEL = AVAILABLE_MODELS[0]
 SUGGESTED_QUESTIONS = [
     "What's active recall?",
     "How does the Pomodoro technique work?",
@@ -47,8 +48,8 @@ def get_embeddings(api_key: str):
 
 
 @st.cache_resource(show_spinner=False)
-def get_llm(api_key: str):
-    return ChatOpenAI(model=MODEL_NAME, api_key=api_key)
+def get_llm(api_key: str, model_name: str):
+    return ChatOpenAI(model=model_name, api_key=api_key)
 
 
 def new_vectorstore(api_key: str) -> Chroma:
@@ -116,7 +117,7 @@ def reset_knowledge_base(api_key: str, reseed: bool = False):
         seed_sample_notes(api_key)
 
 
-def answer_from_notes(question: str, api_key: str, k: int = 3) -> tuple[str, list]:
+def answer_from_notes(question: str, api_key: str, model_name: str, k: int = 3) -> tuple[str, list]:
     vectorstore = get_vectorstore(api_key)
     results = vectorstore.similarity_search(question, k=k)
 
@@ -131,14 +132,14 @@ def answer_from_notes(question: str, api_key: str, k: int = 3) -> tuple[str, lis
         f"CONTEXT:\n{context}"
     )
     messages = [SystemMessage(content=system_prompt), HumanMessage(content=question)]
-    output = get_llm(api_key).invoke(messages)
+    output = get_llm(api_key, model_name).invoke(messages)
     return output.content, results
 
 
 # --------------------------------------------------------------------
 # 2. PAGE CONFIG + STYLING
 # --------------------------------------------------------------------
-st.set_page_config(page_title="Second Brain", page_icon="🧠", layout="centered")
+st.set_page_config(page_title="Quill AI", page_icon="🪶", layout="centered")
 
 st.markdown(
     """
@@ -191,6 +192,17 @@ st.markdown(
         div[data-testid="stButton"] > button {
             border-radius: 999px;
         }
+
+        .app-footer {
+            margin-top: 40px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(148, 163, 184, 0.15);
+            text-align: center;
+            color: #64748b;
+            font-size: 0.8rem;
+        }
+        .app-footer a { color: #94a3b8; text-decoration: none; }
+        .app-footer a:hover { color: #c7d2fe; }
     </style>
     """,
     unsafe_allow_html=True,
@@ -198,12 +210,12 @@ st.markdown(
 
 st.markdown(
     """
-    <div class="hero-title">🧠 Second Brain</div>
+    <div class="hero-title">🪶 Quill AI</div>
     <div class="hero-sub">Ask questions about your notes — answered strictly from what you gave it, nothing invented.</div>
     <div class="badge-row">
         <span class="badge">🔒 Session-only knowledge base</span>
         <span class="badge">🔑 Bring your own API key</span>
-        <span class="badge">⚡ gpt-4o-mini</span>
+        <span class="badge">🧭 Choose your model</span>
     </div>
     """,
     unsafe_allow_html=True,
@@ -231,6 +243,16 @@ with st.sidebar:
     api_key = st.session_state.user_api_key.strip()
 
     if api_key:
+        st.subheader("🧭 Model")
+        model_name = st.selectbox(
+            "Model",
+            AVAILABLE_MODELS,
+            index=AVAILABLE_MODELS.index(DEFAULT_MODEL),
+            label_visibility="collapsed",
+            help="gpt-4o-mini is fastest/cheapest. gpt-4o and gpt-4.1-mini trade cost for quality.",
+        )
+        st.divider()
+
         st.subheader("📚 Knowledge base")
         st.caption("Session-only — resets when you close this tab.")
 
@@ -343,7 +365,7 @@ if user_input:
     with st.chat_message("assistant", avatar="🧠"):
         with st.spinner("Searching your notes..."):
             try:
-                reply, sources = answer_from_notes(user_input, api_key, k=k)
+                reply, sources = answer_from_notes(user_input, api_key, model_name, k=k)
             except Exception as e:
                 reply, sources = f"Something went wrong: {e}", []
         st.write(reply)
@@ -355,3 +377,12 @@ if user_input:
                     st.text(doc.page_content[:200] + "...")
 
     st.session_state.messages.append({"role": "assistant", "content": reply})
+
+st.markdown(
+    """
+    <div class="app-footer">
+        © 2026 Quill AI · Created with regards by <strong>Saqib</strong>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
