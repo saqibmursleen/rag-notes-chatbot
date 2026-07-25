@@ -1,18 +1,3 @@
-"""
-Quill AI — Streamlit app
-------------------------------
-Run with:  streamlit run app.py
-
-Each visitor supplies their own OpenAI API key in the sidebar — the key lives
-only in their browser session (st.session_state), is never written to disk,
-and is not the key used to build/host this app.
-
-The knowledge base is also session-only: it lives in an in-memory Chroma
-collection scoped to that browser tab, seeded with a couple of demo notes so
-there's something to ask about immediately. Closing the tab clears it —
-nobody's uploads or questions leak into anyone else's session.
-"""
-
 import glob
 import os
 import tempfile
@@ -36,12 +21,7 @@ SUGGESTED_QUESTIONS = [
     "What's the two-minute rule?",
 ]
 
-# --------------------------------------------------------------------
-# 1. SETUP — embeddings and LLM are cached per API key (so nobody's
-#    requests are billed to anyone else's account). The vector store is
-#    NOT cached globally — it lives in st.session_state, one fresh
-#    in-memory collection per browser session.
-# --------------------------------------------------------------------
+
 @st.cache_resource(show_spinner=False)
 def get_embeddings(api_key: str):
     return OpenAIEmbeddings(model="text-embedding-3-small", api_key=api_key)
@@ -53,7 +33,6 @@ def get_llm(api_key: str, model_name: str):
 
 
 def new_vectorstore(api_key: str) -> Chroma:
-    """A fresh, in-memory (non-persisted) collection — isolated to this session."""
     return Chroma(embedding_function=get_embeddings(api_key))
 
 
@@ -65,7 +44,6 @@ def get_vectorstore(api_key: str) -> Chroma:
 
 
 def seed_sample_notes(api_key: str):
-    """Auto-load the bundled .txt demo notes so a fresh session isn't empty."""
     txt_paths = sorted(glob.glob(os.path.join(SAMPLE_NOTES_DIR, "*.txt")))
     for path in txt_paths:
         docs = TextLoader(path, encoding="utf-8").load()
@@ -75,7 +53,6 @@ def seed_sample_notes(api_key: str):
 
 
 def load_file_as_documents(uploaded_file) -> list:
-    """Save an uploaded file to a temp path and load it with the right loader."""
     suffix = os.path.splitext(uploaded_file.name)[1].lower()
     with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
         tmp.write(uploaded_file.read())
@@ -88,7 +65,7 @@ def load_file_as_documents(uploaded_file) -> list:
 
     docs = loader.load()
     for doc in docs:
-        doc.metadata["source"] = uploaded_file.name  # keep the real filename, not the temp path
+        doc.metadata["source"] = uploaded_file.name
     return docs
 
 
@@ -101,7 +78,6 @@ def add_documents_to_store(docs: list, api_key: str):
 
 
 def list_indexed_sources(api_key: str) -> dict:
-    """Return {filename: chunk_count} for everything currently in the store."""
     vectorstore = get_vectorstore(api_key)
     data = vectorstore.get()
     counts: dict = {}
@@ -136,9 +112,6 @@ def answer_from_notes(question: str, api_key: str, model_name: str, k: int = 3) 
     return output.content, results
 
 
-# --------------------------------------------------------------------
-# 2. PAGE CONFIG + STYLING
-# --------------------------------------------------------------------
 st.set_page_config(page_title="Quill AI", page_icon="🪶", layout="centered")
 
 st.markdown(
@@ -222,9 +195,6 @@ st.markdown(
 )
 st.divider()
 
-# --------------------------------------------------------------------
-# 3. SIDEBAR — API key + knowledge base management
-# --------------------------------------------------------------------
 with st.sidebar:
     st.subheader("🔑 Your OpenAI API key")
     st.session_state.setdefault("user_api_key", "")
@@ -324,25 +294,18 @@ if not api_key:
     )
     st.stop()
 
-# --------------------------------------------------------------------
-# 4. SESSION STATE
-# --------------------------------------------------------------------
-get_vectorstore(api_key)  # ensures the session's KB exists (and is seeded) before first render
+get_vectorstore(api_key)
 
 if "messages" not in st.session_state:
     st.session_state.messages = [
         {"role": "assistant", "content": "Ask me anything about your notes — try one of the prompts below, or type your own."}
     ]
 
-# --------------------------------------------------------------------
-# 5. RENDER EXISTING MESSAGES
-# --------------------------------------------------------------------
 for msg in st.session_state.messages:
     avatar = "🧠" if msg["role"] == "assistant" else "🧑"
     with st.chat_message(msg["role"], avatar=avatar):
         st.write(msg["content"])
 
-# Quick-start suggestion chips — only show before the conversation gets going
 pending_question = None
 if len(st.session_state.messages) == 1:
     st.caption("Try asking:")
@@ -352,9 +315,6 @@ if len(st.session_state.messages) == 1:
             if st.button(question, use_container_width=True, key=f"chip_{question}"):
                 pending_question = question
 
-# --------------------------------------------------------------------
-# 6. HANDLE NEW INPUT
-# --------------------------------------------------------------------
 user_input = st.chat_input("Ask a question about your notes...") or pending_question
 
 if user_input:
